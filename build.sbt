@@ -3,6 +3,7 @@ import Dependencies._
 
 addCommandAlias("fmt", "; scalafmtAll; scalafmtSbt")
 addCommandAlias("fmtCheck", "; scalafmtCheckAll; scalafmtSbtCheck")
+addCommandAlias("scalafixCheck", "; scalafixEnable; scalafix --check")
 
 ThisBuild / baseVersion := "0.1"
 
@@ -20,7 +21,7 @@ ThisBuild / githubWorkflowPublishTargetBranches := Seq(
 )
 
 ThisBuild / githubWorkflowBuild := Seq(
-  WorkflowStep.Sbt(List("fmtCheck", "test", "mimaReportBinaryIssues"))
+  WorkflowStep.Sbt(List("fmtCheck", "scalafixCheck", "test", "mimaReportBinaryIssues"))
 )
 
 ThisBuild / githubWorkflowEnv ++= Map(
@@ -51,6 +52,8 @@ ThisBuild / scmInfo := Some(
 ThisBuild / licenses := List(("MIT", url("http://opensource.org/licenses/MIT")))
 
 ThisBuild / testFrameworks += new TestFramework("munit.Framework")
+
+ThisBuild / scalafixScalaBinaryVersion := CrossVersion.binaryScalaVersion(scalaVersion.value)
 
 lazy val root = project
   .in(file("."))

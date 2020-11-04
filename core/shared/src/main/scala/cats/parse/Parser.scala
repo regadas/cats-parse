@@ -25,6 +25,7 @@ import cats.{Eval, Monad, Defer, Alternative, FlatMap, Now, MonoidK, Order}
 import cats.data.{AndThen, Chain, NonEmptyList}
 
 import cats.implicits._
+import scala.collection.immutable.NumericRange
 
 /** Parser[A] attempts to extract an `A` value from the given input,
   * potentially moving its offset forward in the process.
@@ -1063,7 +1064,7 @@ object Parser extends ParserInstances {
 
   private object Impl {
 
-    val allChars = Char.MinValue to Char.MaxValue
+    val allChars: NumericRange.Inclusive[Char] = Char.MinValue to Char.MaxValue
 
     val optTail: List[Parser[Option[Nothing]]] = Parser.pure(None) :: Nil
 
@@ -1649,7 +1650,7 @@ object Parser extends ParserInstances {
     case class CharIn(min: Int, bitSet: BitSetUtil.Tpe, ranges: NonEmptyList[(Char, Char)])
         extends Parser1[Char] {
 
-      override def toString = s"CharIn($min, bitSet = ..., $ranges)"
+      override def toString: String = s"CharIn($min, bitSet = ..., $ranges)"
 
       def makeError(offset: Int): Chain[Expectation] =
         Chain.fromSeq(ranges.toList.map { case (s, e) => Expectation.InRange(offset, s, e) })
